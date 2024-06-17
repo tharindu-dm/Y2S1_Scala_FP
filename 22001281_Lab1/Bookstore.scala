@@ -1,11 +1,12 @@
-def CoverPrice(book:Int, price:Float) = book * price //total book price
-def Discount(book:Int, price:Float, discount:Float) = CoverPrice(book, price) * discount / 100; //disount received
+def CoverPrice(book:Int) = book * 24.95f //total book price
 
-def total(book:Int, price:Float, discount:Float):Double = CoverPrice(book, price) - Discount(book, price, discount)
+def Discount(book:Int, discount:Float) = CoverPrice(book) * discount / 100; //disount received
+
+def total(book:Int, discount:Float):Double = CoverPrice(book) - Discount(book, discount)
 //final price after deducting the discount
 
-def shipping(book:Int):Double = if(book > 50) 50*3f + 0.75*(book-50) else book * 3f
-//shipping cost
+def shipping(book:Int):Double = if(book > 50) 3f + 0.75*(book-50) else 3f
+//Shipping costs Rs. 3 for the first 50 copies and 75 cents for each additional copy.
 
-def WholePrice(book:Int, price:Float, discount:Float) = shipping(book) + total(book, price, discount)
+def WholePrice(book:Int, discount:Float) = shipping(book) + total(book, discount)
 //final pricing
