@@ -1,29 +1,9 @@
-/*  Develop a Scala application for managing student records with the following
- functionalities using Scala Tuples.
- a. Function getStudentInfo:
- Reads a student's name, marks, and total possible marks from
- the keyboard. Validates input to ensure the name is not empty
- and marks are positive integers not exceeding the total possible
- marks. Calculates the percentage and assigns a grade based on:
- 1. Afor percentage >= 90%
- 2. Bfor 75% <= percentage < 90%
- 3. Cfor 50% <= percentage < 75%
- 4. Dfor percentage < 50%
- this will be stored by the application
-
- b. Function printStudentRecord:
-search existing records and display the student's name, marks, total possible marks, percentage, and grade.
-
- c. Function validateInput:
- Validates user input (name, marks, total possible marks) and
- returns (isValid: Boolean, errorMessage: Option[String]).
- d. Function getStudentInfoWithRetry:
- Prompts the user for input until valid data is provided, using
- validateInput. Returns the tuple as specified in getStudentInfo */
-
 object q2
 {
-  def getStudentInfo(): (String, Int, Int, Double, Char) =
+  case class Student(name: String, marks:Int, maxMark:Int, percentage:Double, grade:Char)
+  var StudentRec: Set[Student] = Set()
+  
+  def getStudentInfo(): Set[Student] =
   {
     var name = ""
     var marks = 0
@@ -31,14 +11,18 @@ object q2
     var percentage = 0.0
     var grade = 'F'
     var isValid = false
+
     while (!isValid)
     {
       print("Enter student name: ")
       name = scala.io.StdIn.readLine()
+
       print("Enter student marks: ")
       marks = scala.io.StdIn.readLine().toInt
+
       print("Enter total possible marks: ")
       totalMarks = scala.io.StdIn.readLine().toInt
+
       percentage = marks.toDouble / totalMarks.toDouble * 100
       grade = percentage match
       {
@@ -47,14 +31,19 @@ object q2
         case x if x >= 50 => 'C'
         case _ => 'D'
       }
+
       isValid = validateInput(name, marks, totalMarks)._1
     }
-    (name, marks, totalMarks, percentage, grade)
+
+    StudentRec + Student(name, marks, totalMarks, percentage, grade)
   }
 
-  def printStudentRecord(student: (String, Int, Int, Double, Char)): Unit =
+  def printStudentRecord(): Unit =
   {
-    printf("Name: %s\nMarks: %d\nTotal Marks: %d\nPercentage: %.2f\nGrade: %c\n", student._1, student._2, student._3, student._4, student._5)
+    for (student <- StudentRec)
+    {
+      println(s"${student.name}\t${student.marks}\t${student.maxMark}\t${student.percentage}\t${student.grade}")
+    }
   }
 
   def validateInput(name: String, marks: Int, totalMarks: Int): (Boolean, Option[String]) =
@@ -73,13 +62,15 @@ object q2
     }
   }
 
-  def getStudentInfoWithRetry(): (String, Int, Int, Double, Char) =
+  def getStudentInfoWithRetry(): Student =
   {
-    var student = getStudentInfo()
-    while (!validateInput(student._1, student._2, student._3)._1)
+    var studentSet = getStudentInfo()
+    var student = studentSet.head
+    while (!validateInput(student.name, student.marks, student.maxMark)._1)
     {
-      println(validateInput(student._1, student._2, student._3)._2.get)
-      student = getStudentInfo()
+      println(validateInput(student.name, student.marks, student.maxMark)._2.get)
+      studentSet = getStudentInfo()
+      student = studentSet.head
     }
     student
   }
@@ -95,10 +86,10 @@ object q2
 
       input match
       {
-        case x if x == "01" => printStudentRecord(getStudentInfo())
-        case x if x == "02" => printStudentRecord(getStudentInfo())
+        case x if x == "01" => printStudentRecord()
+        case x if x == "02" => printStudentRecord()
         case x if x == "03" => println(validateInput(scala.io.StdIn.readLine(), scala.io.StdIn.readLine().toInt, scala.io.StdIn.readLine().toInt))
-        case x if x == "04" => printStudentRecord(getStudentInfoWithRetry())
+        case x if x == "04" => printStudentRecord()
         case x if x == "-1" => return;
         case _ => println("Invalid input\n")
       }
