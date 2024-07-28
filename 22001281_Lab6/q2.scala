@@ -86,10 +86,10 @@ object q2
 
       input match
       {
-        case x if x == "01" => printStudentRecord()
+        case x if x == "01" => StudentRec = getStudentInfo()
         case x if x == "02" => printStudentRecord()
         case x if x == "03" => println(validateInput(scala.io.StdIn.readLine(), scala.io.StdIn.readLine().toInt, scala.io.StdIn.readLine().toInt))
-        case x if x == "04" => printStudentRecord()
+        case x if x == "04" => println(getStudentInfoWithRetry())
         case x if x == "-1" => return;
         case _ => println("Invalid input\n")
       }
